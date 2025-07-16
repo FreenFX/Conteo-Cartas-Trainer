@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Entrenador de Conteo de Cartas</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 30px;
       background-color: #121212;
-      color: #ffffff;
+      color: #fff;
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -29,7 +29,9 @@
     .card.animate {
       transform: scale(1.2);
     }
-    button, select, input {
+    button,
+    select,
+    input {
       padding: 10px 20px;
       margin: 10px;
       font-size: 18px;
@@ -45,7 +47,8 @@
       background-color: #555;
       color: white;
     }
-    select, input[type="number"] {
+    select,
+    input[type='number'] {
       background-color: #333;
       color: white;
     }
@@ -78,6 +81,16 @@
       <option value="6">6 mazos</option>
     </select>
 
+    <div>
+      <label for="dificultad">Nivel de dificultad modo práctica:</label>
+      <select id="dificultad">
+        <option value="3000">Fácil (3 seg)</option>
+        <option value="2000" selected>Medio (2 seg)</option>
+        <option value="1000">Difícil (1 seg)</option>
+        <option value="500">Extremo (0.5 seg)</option>
+      </select>
+    </div>
+
     <div class="card" id="cardDisplay">🂠</div>
 
     <button class="btn-primary" onclick="drawCard()">Sacar carta</button>
@@ -87,7 +100,7 @@
 
     <div id="inputResultado" style="display: none;">
       <p>¿Cuál fue la cuenta total?</p>
-      <input type="number" id="resultadoUsuario">
+      <input type="number" id="resultadoUsuario" />
       <button class="btn-primary" onclick="verificarResultado()">Enviar</button>
     </div>
 
@@ -189,7 +202,8 @@
         setTimeout(() => cardDisplay.classList.remove('animate'), 200);
       }, 50);
       practicaCount++;
-      setTimeout(mostrarCartasPractica, 2000);
+      const dificultad = parseInt(document.getElementById('dificultad').value);
+      setTimeout(mostrarCartasPractica, dificultad);
     }
 
     function verificarResultado() {
