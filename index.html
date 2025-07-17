@@ -4,99 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Entrenador de Conteo de Cartas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background-color: #121212;
-      color: #fff;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-    }
-    .main {
-      text-align: center;
-      flex: 1;
-    }
-    .card {
-      font-size: 60px;
-      margin: 20px;
-      min-height: 80px;
-      transition: transform 0.2s ease;
-    }
-    .card.animate {
-      transform: scale(1.2);
-    }
-    button,
-    select,
-    input {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .btn-primary {
-      background-color: #2196f3;
-      color: white;
-    }
-    .btn-secondary {
-      background-color: #555;
-      color: white;
-    }
-    select,
-    input[type='number'] {
-      background-color: #333;
-      color: white;
-    }
-    .legend {
-      background-color: #1e1e1e;
-      border: 1px solid #555;
-      border-radius: 8px;
-      padding: 15px;
-      max-width: 250px;
-    }
-    .legend h3 {
-      margin-top: 0;
-    }
-    .toggle-btn {
-      background-color: #444;
-      margin-top: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
   <div class="main">
-    <h1>Entrenador de Conteo de Cartas</h1>
+    <h1>ENTRENADOR DE CONTEO DE CARTAS</h1>
     <p>Haz clic para mostrar una carta. Contá mentalmente según High-Low.</p>
 
-    <label for="mazos">Cantidad de mazos:</label>
+    <label for="mazos">CANTIDAD DE MAZOS:</label>
     <select id="mazos">
-      <option value="1">1 mazo</option>
-      <option value="2">2 mazos</option>
-      <option value="4">4 mazos</option>
-      <option value="6">6 mazos</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="4">4</option>
+      <option value="6">6</option>
     </select>
 
     <div>
-      <label for="dificultad">Nivel de dificultad modo práctica:</label>
+      <label for="dificultad">NIVEL DE DIFICULTAD MODO PRÁCTICA:</label>
       <select id="dificultad">
-        <option value="3000">Fácil (3 seg)</option>
-        <option value="2000" selected>Medio (2 seg)</option>
-        <option value="1000">Difícil (1 seg)</option>
-        <option value="500">Extremo (0.5 seg)</option>
+        <option value="3000">Fácil</option>
+        <option value="2000" selected>Medio</option>
+        <option value="1000">Difícil</option>
+        <option value="500">Challenger 1k lp</option>
       </select>
     </div>
 
     <div class="card" id="cardDisplay">🂠</div>
 
-    <button class="btn-primary" onclick="drawCard()">Sacar carta</button>
-    <button class="btn-secondary" onclick="resetDeck()">Reiniciar mazo</button>
-    <button class="btn-secondary" onclick="mostrarCuenta()">Mostrar cuenta</button>
-    <button class="btn-secondary" onclick="modoPractica()">Modo práctica (10 cartas)</button>
+    <button class="btn-primary" onclick="drawCard()">SACAR CARTA</button>
+    <button class="btn-secondary" onclick="resetDeck()">REINICIAR MAZO</button>
+    <button class="btn-secondary" onclick="mostrarCuenta()">MOSTRAR CUENTA</button>
+    <button class="btn-secondary" onclick="modoPractica()">MODO PRÁCTICA</button>
 
     <div id="inputResultado" style="display: none;">
       <p>¿Cuál fue la cuenta total?</p>
@@ -109,123 +47,12 @@
 
   <div class="legend" id="leyenda">
     <h3>Valores High-Low</h3>
-    <p><strong>+1</strong>: 2, 3, 4, 5, 6</p>
-    <p><strong>0</strong>: 7, 8, 9</p>
-    <p><strong>-1</strong>: 10, J, Q, K, A</p>
+    <p><strong>2, 3, 4, 5, 6</strong>: +1</p>
+    <p><strong>7, 8, 9</strong>: 0</p>
+    <p><strong>10, J, Q, K, A</strong>: -1</p>
   </div>
   <button class="btn-secondary toggle-btn" onclick="toggleLeyenda()" id="toggleBtn">Ocultar valores</button>
 
-  <script>
-    let deck = [];
-    let runningCount = 0;
-    let practicaCount = 0;
-    let leyendaVisible = true;
-
-    function generarMazo(mazos = 1) {
-      const valores = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-      let nuevoMazo = [];
-      for (let i = 0; i < mazos; i++) {
-        for (let v of valores) {
-          for (let j = 0; j < 4; j++) {
-            nuevoMazo.push(v);
-          }
-        }
-      }
-      return mezclar(nuevoMazo);
-    }
-
-    function mezclar(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function valorHighLow(carta) {
-      if (['2', '3', '4', '5', '6'].includes(carta)) return 1;
-      if (['7', '8', '9'].includes(carta)) return 0;
-      if (['10', 'J', 'Q', 'K', 'A'].includes(carta)) return -1;
-    }
-
-    function drawCard() {
-      if (deck.length === 0) {
-        document.getElementById('status').innerText = 'Mazo vacío. Reiniciá.';
-        return;
-      }
-      const carta = deck.pop();
-      const cardDisplay = document.getElementById('cardDisplay');
-      runningCount += valorHighLow(carta);
-      cardDisplay.innerText = '';
-      setTimeout(() => {
-        cardDisplay.innerText = carta;
-        cardDisplay.classList.add('animate');
-        setTimeout(() => cardDisplay.classList.remove('animate'), 200);
-      }, 50);
-    }
-
-    function resetDeck() {
-      const cantidadMazos = parseInt(document.getElementById('mazos').value);
-      deck = generarMazo(cantidadMazos);
-      runningCount = 0;
-      document.getElementById('cardDisplay').innerText = '🂠';
-      document.getElementById('status').innerText = `Nuevo mazo generado con ${cantidadMazos} mazo(s).`;
-    }
-
-    function mostrarCuenta() {
-      document.getElementById('status').innerText = `Cuenta actual: ${runningCount}`;
-    }
-
-    function modoPractica() {
-      resetDeck();
-      practicaCount = 0;
-      runningCount = 0;
-      document.getElementById('status').innerText = 'Modo práctica iniciado...';
-      document.getElementById('inputResultado').style.display = 'none';
-      mostrarCartasPractica();
-    }
-
-    function mostrarCartasPractica() {
-      if (practicaCount >= 10) {
-        document.getElementById('cardDisplay').innerText = '🂠';
-        document.getElementById('status').innerText = 'Ingresá el resultado que contaste:';
-        document.getElementById('inputResultado').style.display = 'block';
-        return;
-      }
-      const carta = deck.pop();
-      const cardDisplay = document.getElementById('cardDisplay');
-      runningCount += valorHighLow(carta);
-      cardDisplay.innerText = '';
-      setTimeout(() => {
-        cardDisplay.innerText = carta;
-        cardDisplay.classList.add('animate');
-        setTimeout(() => cardDisplay.classList.remove('animate'), 200);
-      }, 50);
-      practicaCount++;
-      const dificultad = parseInt(document.getElementById('dificultad').value);
-      setTimeout(mostrarCartasPractica, dificultad);
-    }
-
-    function verificarResultado() {
-      const valorUsuario = parseInt(document.getElementById('resultadoUsuario').value);
-      if (valorUsuario === runningCount) {
-        document.getElementById('status').innerText = '✅ ¡Correcto!';
-      } else {
-        document.getElementById('status').innerText = `❌ Incorrecto. La cuenta era ${runningCount}.`;
-      }
-      document.getElementById('inputResultado').style.display = 'none';
-    }
-
-    function toggleLeyenda() {
-      const leyenda = document.getElementById('leyenda');
-      const toggleBtn = document.getElementById('toggleBtn');
-      leyendaVisible = !leyendaVisible;
-      leyenda.style.display = leyendaVisible ? 'block' : 'none';
-      toggleBtn.innerText = leyendaVisible ? 'Ocultar valores' : 'Mostrar valores';
-    }
-
-    // Inicializar
-    resetDeck();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
